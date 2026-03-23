@@ -20,19 +20,20 @@ Before fitting any models, it is essential to understand the data. Use R or bash
 (i) Read the .fam file. How many samples does the dataset contain?
 
 ```         
-# Your answer here...
+4000
+
 ```
 
 (ii) What is the 'variable type' of the response variable (i.e.Continuous or binary)?
 
 ```         
-# Your answer here...
+Continuous
 ```
 
 (iii) Read the .bim file. How many SNPs does the dataset contain?
 
 ```         
-# Your answer here...
+101083 SNPs
 ```
 
 #### Question 2: Allele Frequency Estimation
@@ -40,13 +41,35 @@ Before fitting any models, it is essential to understand the data. Use R or bash
 (i) Load the genotype matrix for SNPs rs1861, rs3813199, rs3128342, and rs11804831 using additive coding. What are the allele frequencies (AFs) for these four SNPs?
 
 ```         
-# Your code here...
+plink --bfile 02_activities/data/gwa.qc.A1 \
+--snps rs1861,rs3813199,rs3128342,rs11804831 \
+--recodeA \
+--out snps_extract
+
+geno <- read.table("snps_extract.raw", header = TRUE)
+
+head(geno)
+AF <- colMeans(geno[,c("rs1861_A","rs3813199_A","rs3128342_A","rs11804831_A")], na.rm=TRUE)/2
+
+AF
+
+rs1861      0.9460
+rs3813199   0.9431
+rs3128342   0.6949
+rs11804831  0.8457
 ```
 
 (ii) What are the minor allele frequencies (MAFs) for these four SNPs?
 
 ```         
-# Your code here...
+MAF <- pmin(AF, 1-AF)
+
+MAF
+
+rs1861      0.0540
+rs3813199   0.0569
+rs3128342   0.3051
+rs11804831  0.1543
 ```
 
 #### Question 3: Hardy–Weinberg Equilibrium (HWE) Test
@@ -54,13 +77,26 @@ Before fitting any models, it is essential to understand the data. Use R or bash
 (i) Conduct the Hardy–Weinberg Equilibrium (HWE) test for all SNPs in the .bim file. Then, load the file containing the HWE p-value results and display the first few rows of the resulting data frame.
 
 ```         
-# Your code here...
+plink --bfile 02_activities/data/gwa.qc.A1 \
+--hardy \
+--out hwe_results
+
+hwe <- read.table("hwe_results.hwe", header=TRUE)
+
+head(hwe)
+
+subset(hwe, SNP %in% c("rs1861","rs3813199","rs3128342","rs11804831"))[,c("SNP","P")]
+
+
 ```
 
 (ii) What are the HWE p-values for SNPs rs1861, rs3813199, rs3128342, and rs11804831?
 
 ```         
-# Your code here...
+rs1861      0.274719
+rs3813199   0.7988
+rs3128342   0.3318
+rs11804831  0.1034
 ```
 
 #### Question 4: Genetic Association Test
@@ -68,43 +104,84 @@ Before fitting any models, it is essential to understand the data. Use R or bash
 (i) Conduct a linear regression to test the association between SNP rs1861 and the phenotype. What is the p-value?
 
 ```         
-# Your code here...
+plink --bfile gwa.qc.A1 \
+--snp rs1861 \
+--linear \
+--out rs1861_assoc
+
+rs1861_assoc.assoc.linear
+
+#load in r
+assoc <- read.table("rs1861_assoc.assoc.linear", header=TRUE)
+assoc
+
+p-value = 1.62e-82
 ```
 
 (ii) How would you interpret the beta coefficient from this regression?
 
 ```         
-# Your answer here...
+β ≈ 0.974. The beta coefficient represents the expected change in the phenotype for each additional copy of the rs1861 major allele under additive genetic coding. Each additional major allele increases the phenotype by ~0.97 units on average.
 ```
 
 (iii) Plot the scatterplot of phenotype versus the genotype of SNP rs1861. Add the regression line to the plot.
 
 ```         
-# Your code here...
+plink --bfile gwa.qc.A1 \
+--snp rs1861 \
+--recodeA \
+--out rs1861_geno
+
+geno <- read.table("rs1861_geno.raw", header=TRUE)
+fam <- read.table("gwa.qc.A1.fam")
+
+phenotype <- fam$V6
+genotype <- geno$rs1861_A
+
+plot(genotype, phenotype,
+     xlab="rs1861 Genotype",
+     ylab="Phenotype")
+
+abline(lm(phenotype ~ genotype), col="red", lwd=2)
+
 ```
 
 (iv) Convert the genotype coding for rs1861 to recessive coding.
 
 ```         
-# Your code here...
+rs1861_rec <- ifelse(rs1861 == 2, 1, 0)
 ```
 
 (v) Conduct a linear regression to test the association between the recessive-coded rs1861 and the phenotype. What is the p-value?
 
 ```         
-# Your code here...
+model_rec <- lm(phenotype ~ rs1861_rec)
+
+summary(model_rec)
+
+summary(model_rec)$coefficients[2,4]
+
+p-value= 2.73e-79
 ```
 
 (vi) Plot the scatterplot of phenotype versus the recessive-coded genotype of rs1861. Add the regression line to the plot.
 
 ```         
-# Your code here...
+plot(rs1861_rec, phenotype,
+     xlab="rs1861 Recessive Genotype",
+     ylab="Phenotype")
+
+abline(model_rec, col="blue", lwd=2)
 ```
 
 (vii) Which model fits better? Justify your answer.
 
 ```         
-# Your answer here...
+summary(model)$r.squared
+summary(model_rec)$r.squared
+
+The additive model fits better because it has a slightly higher R² (0.0892 vs 0.0858), meaning it explains more variance in the phenotype.
+
 ```
 
 ### Criteria

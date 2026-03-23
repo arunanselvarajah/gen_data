@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Assignment 1</title>
+<style>
+body{font-family:Arial, sans-serif; margin:40px; line-height:1.6}
+h1,h2,h3{color:#2c3e50}
+pre{background:#f4f4f4;padding:10px;border-radius:6px}
+table{border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #ccc;padding:6px 10px}
+th{background:#eee}
+</style>
+</head>
+<body>
+
+<h1>Assignment 1</h1>
+
+<h2>Question 1: Data Inspection</h2>
+
+<h3>(i) Number of samples</h3>
+<pre>fam <- read.table("gwa.qc.A1.fam")
+nrow(fam)</pre>
+<p><b>Answer:</b> 4000</p>
+
+<h3>(ii) Variable type of response variable</h3>
+<pre>unique(fam$V6)</pre>
+<p><b>Answer:</b> Continuous</p>
+
+<h3>(iii) Number of SNPs</h3>
+<pre>bim <- read.table("gwa.qc.A1.bim")
+nrow(bim)</pre>
+<p><b>Answer:</b> 101083</p>
+
+<h2>Question 2: Allele Frequency Estimation</h2>
+
+<h3>PLINK command</h3>
+<pre>plink --bfile gwa.qc.A1 --snps rs1861,rs3813199,rs3128342,rs11804831 --freq --out allele_freq</pre>
+
+<table>
+<tr><th>SNP</th><th>Allele Frequency</th></tr>
+<tr><td>rs1861</td><td>0.9460</td></tr>
+<tr><td>rs3813199</td><td>0.9431</td></tr>
+<tr><td>rs3128342</td><td>0.6949</td></tr>
+<tr><td>rs11804831</td><td>0.8457</td></tr>
+</table>
+
+<h3>Minor Allele Frequencies</h3>
+
+<table>
+<tr><th>SNP</th><th>MAF</th></tr>
+<tr><td>rs1861</td><td>0.0540</td></tr>
+<tr><td>rs3813199</td><td>0.0569</td></tr>
+<tr><td>rs3128342</td><td>0.3051</td></tr>
+<tr><td>rs11804831</td><td>0.1543</td></tr>
+</table>
+
+<h2>Question 3: Hardy–Weinberg Equilibrium</h2>
+
+<h3>PLINK command</h3>
+<pre>plink --bfile gwa.qc.A1 --hardy --out hwe_results</pre>
+
+<table>
+<tr><th>SNP</th><th>HWE p-value</th></tr>
+<tr><td>rs1861</td><td>0.2837</td></tr>
+<tr><td>rs3813199</td><td>0.7988</td></tr>
+<tr><td>rs3128342</td><td>0.3318</td></tr>
+<tr><td>rs11804831</td><td>0.1034</td></tr>
+</table>
+
+<h2>Question 4: Genetic Association Test</h2>
+
+<h3>PLINK linear regression</h3>
+<pre>plink --bfile gwa.qc.A1 --snp rs1861 --linear --out rs1861_assoc</pre>
+
+<p><b>P-value:</b> 1.62e-82</p>
+
+<h3>Interpretation</h3>
+<p>The beta coefficient represents the expected change in the phenotype for each additional copy of the rs1861 major allele.</p>
+
+<h3>Model comparison</h3>
+<table>
+<tr><th>Model</th><th>R²</th></tr>
+<tr><td>Additive</td><td>0.0892</td></tr>
+<tr><td>Recessive</td><td>0.0858</td></tr>
+</table>
+
+<p><b>Conclusion:</b> The additive model fits slightly better.</p>
+
+</body>
+</html>
