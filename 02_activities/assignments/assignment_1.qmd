@@ -93,7 +93,7 @@ subset(hwe, SNP %in% c("rs1861","rs3813199","rs3128342","rs11804831"))[,c("SNP",
 (ii) What are the HWE p-values for SNPs rs1861, rs3813199, rs3128342, and rs11804831?
 
 ```         
-rs1861      0.2837
+rs1861      0.274719
 rs3813199   0.7988
 rs3128342   0.3318
 rs11804831  0.1034
@@ -121,7 +121,7 @@ p-value = 1.62e-82
 (ii) How would you interpret the beta coefficient from this regression?
 
 ```         
-β ≈ 0.974. The beta coefficient represents the expected change in the phenotype for each additional copy of the rs1861 minor allele under additive genetic coding. Each additional minor allele increases the phenotype by ~0.97 units on average.
+β ≈ 0.974. The beta coefficient represents the expected change in the phenotype for each additional copy of the rs1861 major allele under additive genetic coding. Each additional major allele increases the phenotype by ~0.97 units on average.
 ```
 
 (iii) Plot the scatterplot of phenotype versus the genotype of SNP rs1861. Add the regression line to the plot.
