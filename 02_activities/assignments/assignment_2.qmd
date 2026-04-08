@@ -9,23 +9,26 @@ You will need **PLINK2** installed and available in your PATH. Please follow the
 
 Before you run any models, first get familiar with the dataset. You may find `data.table::fread()` in R helpful for reading `.bim` and `.fam` files.
 
-(i) Read the `.fam` file. How many samples does the dataset contain? 4000
+(i) Read the `.fam` file. How many samples does the dataset contain? 
 
 ```{r}
 library(data.table)
 
 fam <- fread("02_activities/data/gwa.A2.fam", header = FALSE)
 nrow(fam)
+#4000 sanples
 ```
 
-(ii) Read the `.bim` file. How many SNPs does the dataset contain? 306,102 SNPs
+(ii) Read the `.bim` file. How many SNPs does the dataset contain? 
 
 ```{r}
 bim <- fread("02_activities/data/gwa.A2.bim", header = FALSE)
 nrow(bim)
+
+#306,102 SNPs 
 ```
 
-(iii) Make a histogram (or density plot) of the phenotype. Does it look roughly Gaussian?
+(iii) Make a histogram (or density plot) of the phenotype. Does it look roughly Gaussian? 
 
 ```{r}
 library(ggplot2)
@@ -42,6 +45,8 @@ ggplot(data.frame(pheno), aes(x = pheno)) +
 ggplot(data.frame(pheno), aes(x = pheno)) +
   geom_density() +
   theme_minimal()
+
+#The phenotype appears approximately Gaussian (normally distributed), with a symmetric bell-shaped distribution and no major skew.
 ```
 
 #### Question 2: Quality control (QC)
